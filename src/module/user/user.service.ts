@@ -1,7 +1,5 @@
-import { error } from 'console';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { Error } from 'mongoose';
 
 const getUsersFromDB = async () => {
   const result = await User.find(
@@ -26,9 +24,23 @@ const createUserToDB = async (userData: TUser) => {
 
   return result;
 };
+const updateUserOfDB = async (id: number, data: TUser) => {
+  const userChecker = await User.isUserExists(id);
+  if (userChecker) {
+    const result = await User.updateOne({ userId: id }, data);
+    if (result.modifiedCount === 1) {
+      //   const data = await User.isUserExists(id);
+      //   if (data as TUser) return data as TUser;
+      return await User.findOne({ userId: id });
+    }
+  } else {
+    throw User.errorWithStatus('user not found', 500);
+  }
+};
 
 export const userServices = {
   createUserToDB,
   getUsersFromDB,
   getOneUserFromDB,
+  updateUserOfDB,
 };

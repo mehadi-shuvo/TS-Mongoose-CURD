@@ -77,9 +77,36 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
+const updateOne = async (req: Request, res: Response) => {
+  try {
+    const userData = await req.body;
+    const { userId } = req.params;
+
+    const result = await userServices.updateUserOfDB(
+      parseInt(userId),
+      userData,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'user updated successfully.',
+      data: {
+        ...result?.toObject(),
+        password: undefined,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Wrong data found',
+      error: err,
+    });
+  }
+};
 
 export const userControllers = {
   createUser,
   getAllUser,
   getOneUser,
+  updateOne,
 };
