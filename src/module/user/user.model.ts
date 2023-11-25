@@ -1,11 +1,16 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
+import { TFullName, TUser } from './user.interface';
+
+const fullNameSchema = new Schema<TFullName>({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+});
 
 const userSchema = new Schema<TUser>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  fullName: { type: String, required: true },
+  fullName: { type: fullNameSchema, required: true },
   age: { type: Number, required: true },
   email: { type: String, required: true },
   isActive: { type: Boolean, required: true },
