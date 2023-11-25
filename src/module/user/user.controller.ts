@@ -1,16 +1,36 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
 
+const getAllUser = async (req: Request, res: Response) => {
+  try {
+    const result = await userServices.getUsersFromDB();
+
+    res.status(200).json({
+      success: true,
+      message: 'users fetched successfully.',
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Wrong data found',
+      error: err,
+    });
+  }
+};
 const createUser = async (req: Request, res: Response) => {
   try {
     const userData = await req.body;
 
-    const result = await userServices.createStudentToDB(userData);
+    const result = await userServices.createUserToDB(userData);
 
     res.status(200).json({
       success: true,
       message: 'user created successfully.',
-      data: result,
+      data: {
+        ...result.toObject(),
+        password: undefined,
+      },
     });
   } catch (err: any) {
     res.status(500).json({
@@ -23,4 +43,5 @@ const createUser = async (req: Request, res: Response) => {
 
 export const userControllers = {
   createUser,
+  getAllUser,
 };
