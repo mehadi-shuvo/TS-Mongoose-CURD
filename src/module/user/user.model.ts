@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { TFullName, TOrders, TUser, UserModel } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../app/config';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: { type: String, required: true },
@@ -44,6 +46,13 @@ userSchema.statics.errorWithStatus = function (
 ) {
   return { description: message, status };
 };
+
+//
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt));
+  next();
+});
 
 // model of a user data=====================
 export const User = model<TUser, UserModel>('users', userSchema);
