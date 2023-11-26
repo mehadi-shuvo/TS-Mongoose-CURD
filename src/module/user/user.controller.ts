@@ -167,12 +167,33 @@ const getOrdersOfOneUser = async (req: Request, res: Response) => {
     });
   }
 };
+const getTotalOfProducts = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const result = await userServices.getTotalOfProductsPriceFromDB(
+      parseInt(userId),
+    );
+    res.status(200).json({
+      success: true,
+      message: 'total price calculated successfully',
+      data: { totalPrice: result },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Wrong data found',
+      error: err,
+    });
+  }
+};
 export const userControllers = {
-  createUser,
+  createUser, //
   getAllUser,
   getOneUser,
-  updateOne,
+  updateOne, //
   deleteUser,
-  addOder,
+  addOder, //
   getOrdersOfOneUser,
+  getTotalOfProducts,
 };

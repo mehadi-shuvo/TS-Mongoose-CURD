@@ -67,6 +67,18 @@ const getUserProductFromDB = async (id: number) => {
     throw User.errorWithStatus('user not found', 500);
   }
 };
+const getTotalOfProductsPriceFromDB = async (id: number) => {
+  const user = await User.isUserExists(id);
+  if (user) {
+    let sum = 0;
+    const result = user?.orders?.map(
+      (pro) => (sum += pro.price * pro.quantity),
+    );
+    return sum;
+  } else {
+    throw User.errorWithStatus('user not found', 500);
+  }
+};
 
 export const userServices = {
   createUserToDB,
@@ -76,4 +88,5 @@ export const userServices = {
   deleteUserFromDB,
   addProductInDB,
   getUserProductFromDB,
+  getTotalOfProductsPriceFromDB,
 };
