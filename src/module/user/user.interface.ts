@@ -5,6 +5,11 @@ export type TFullName = {
   lastName: string;
 };
 
+export type TOrders = {
+  productName: string;
+  price: number;
+  quantity: number;
+}[];
 export type TUser = {
   userId: number;
   username: string;
@@ -19,6 +24,7 @@ export type TUser = {
     city: string;
     country: string;
   };
+  orders?: TOrders;
 };
 
 export interface UserModel extends Model<TUser> {
