@@ -6,8 +6,6 @@ const fullNameSchema = new Schema<TFullName>({
   lastName: { type: String, required: true },
 });
 
-// const ordersSchema = new Schema<TOrders>();
-
 const userSchema = new Schema<TUser, UserModel>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },

@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
+import userValidationSchema, { orderValidationSchema } from './user.validation';
+
+// get all user ==============================
 
 const getAllUser = async (req: Request, res: Response) => {
   try {
@@ -18,6 +21,9 @@ const getAllUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// get a user by id =====================================
+
 const getOneUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -55,11 +61,16 @@ const getOneUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// create an user =====================
+
 const createUser = async (req: Request, res: Response) => {
   try {
     const userData = await req.body;
 
-    const result = await userServices.createUserToDB(userData);
+    const validData = userValidationSchema.parse(userData);
+
+    const result = await userServices.createUserToDB(validData);
 
     res.status(200).json({
       success: true,
@@ -67,6 +78,7 @@ const createUser = async (req: Request, res: Response) => {
       data: {
         ...result.toObject(),
         password: undefined,
+        orders: undefined,
       },
     });
   } catch (err: any) {
@@ -77,14 +89,17 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// update a user data =======================
+
 const updateOne = async (req: Request, res: Response) => {
   try {
     const userData = await req.body;
     const { userId } = req.params;
-
+    const validData = userValidationSchema.parse(userData);
     const result = await userServices.updateUserOfDB(
       parseInt(userId),
-      userData,
+      validData,
     );
 
     res.status(200).json({
@@ -93,6 +108,7 @@ const updateOne = async (req: Request, res: Response) => {
       data: {
         ...result?.toObject(),
         password: undefined,
+        orders: undefined,
       },
     });
   } catch (err: any) {
@@ -103,6 +119,8 @@ const updateOne = async (req: Request, res: Response) => {
     });
   }
 };
+
+// delete a user =================
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
@@ -124,14 +142,18 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// add product in a user's oder list
+
 const addOder = async (req: Request, res: Response) => {
   try {
     const userData = await req.body;
     const { userId } = req.params;
 
+    const validData = orderValidationSchema.parse(userData);
+
     const result = await userServices.addProductInDB(
       parseInt(userId),
-      userData,
+      validData,
     );
 
     if (result.acknowledged === true) {
@@ -149,6 +171,9 @@ const addOder = async (req: Request, res: Response) => {
     });
   }
 };
+
+//get all products of a user ===================
+
 const getOrdersOfOneUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -167,6 +192,9 @@ const getOrdersOfOneUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+//get total price of a user products===================
+
 const getTotalOfProducts = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -188,10 +216,10 @@ const getTotalOfProducts = async (req: Request, res: Response) => {
   }
 };
 export const userControllers = {
-  createUser, //
+  createUser,
   getAllUser,
   getOneUser,
-  updateOne, //
+  updateOne,
   deleteUser,
   addOder, //
   getOrdersOfOneUser,

@@ -24,6 +24,7 @@ const createUserToDB = async (userData: TUser) => {
 
   return result;
 };
+
 const updateUserOfDB = async (id: number, data: TUser) => {
   const userChecker = await User.isUserExists(id);
   if (userChecker) {
@@ -32,7 +33,7 @@ const updateUserOfDB = async (id: number, data: TUser) => {
       return await User.findOne({ userId: id });
     }
   } else {
-    throw User.errorWithStatus('user not found', 500);
+    throw User.errorWithStatus('user not found', 404);
   }
 };
 const deleteUserFromDB = async (id: number) => {
