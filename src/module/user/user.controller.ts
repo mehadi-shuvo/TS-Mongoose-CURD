@@ -149,6 +149,24 @@ const addOder = async (req: Request, res: Response) => {
     });
   }
 };
+const getOrdersOfOneUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const result = await userServices.getUserProductFromDB(parseInt(userId));
+    res.status(200).json({
+      success: true,
+      message: 'oder fetched successfully',
+      data: { orders: result },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Wrong data found',
+      error: err,
+    });
+  }
+};
 export const userControllers = {
   createUser,
   getAllUser,
@@ -156,4 +174,5 @@ export const userControllers = {
   updateOne,
   deleteUser,
   addOder,
+  getOrdersOfOneUser,
 };

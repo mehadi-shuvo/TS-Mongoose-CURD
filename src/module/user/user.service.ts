@@ -58,6 +58,15 @@ const addProductInDB = async (id: number, product: any) => {
     throw User.errorWithStatus('user not found', 500);
   }
 };
+const getUserProductFromDB = async (id: number) => {
+  const user = await User.isUserExists(id);
+  if (user) {
+    const result = user?.orders;
+    return result;
+  } else {
+    throw User.errorWithStatus('user not found', 500);
+  }
+};
 
 export const userServices = {
   createUserToDB,
@@ -66,4 +75,5 @@ export const userServices = {
   updateUserOfDB,
   deleteUserFromDB,
   addProductInDB,
+  getUserProductFromDB,
 };
