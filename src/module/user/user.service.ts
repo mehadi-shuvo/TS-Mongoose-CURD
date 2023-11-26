@@ -29,10 +29,17 @@ const updateUserOfDB = async (id: number, data: TUser) => {
   if (userChecker) {
     const result = await User.updateOne({ userId: id }, data);
     if (result.modifiedCount === 1) {
-      //   const data = await User.isUserExists(id);
-      //   if (data as TUser) return data as TUser;
       return await User.findOne({ userId: id });
     }
+  } else {
+    throw User.errorWithStatus('user not found', 500);
+  }
+};
+const deleteUserFromDB = async (id: number) => {
+  const userChecker = await User.isUserExists(id);
+  if (userChecker) {
+    const result = await User.deleteOne({ userId: id });
+    return result;
   } else {
     throw User.errorWithStatus('user not found', 500);
   }
@@ -43,4 +50,5 @@ export const userServices = {
   getUsersFromDB,
   getOneUserFromDB,
   updateUserOfDB,
+  deleteUserFromDB,
 };
